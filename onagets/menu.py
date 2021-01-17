@@ -7,11 +7,14 @@ banner = """
 |/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
 """
 
-def brutefoce():
-    channelFile = ("Répertoire du fichier contenant les canaux à bruteforce : ")
-    dS.selectChannel(channelFile)
+def bruteforce():
+    #channelFile = input("Répertoire du fichier contenant les canaux à bruteforce : ")
+    channelFile = '/Users/hugo/BSI/dev/python/Ona Gets/config_rvb'
+    channels = dS.selectChannel(channelFile)
     print("[i] Canaux chargés !")
-    bruteFile = input("Répertoire de l'image à BruteForce : ")
+    #bruteFile = input("Répertoire de l'image à BruteForce : ")
+    bruteFile = '/Users/hugo/BSI/dev/python/Ona Gets/images/ctf1.png'
+    dS.bruteforce(bruteFile, channels)
     
     
 
