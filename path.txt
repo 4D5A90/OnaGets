@@ -1,2 +1,2 @@
 /Users/hugo/BSI/dev/python/Ona Gets/config_rvb
-/Users/hugo/BSI/dev/python/Ona Gets/images/ctf1.png
+/Users/hugo/BSI/dev/python/Ona Gets/images/ctf2.png

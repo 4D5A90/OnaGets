@@ -43,5 +43,6 @@ print("========================\n")
 
 inMenu = True
 while inMenu:
-    ans = input("Choisissez une option : ")
+    #ans = input("Choisissez une option : ")
+    ans = "1"
     menu.get(ans,[None,invalid])[1]()
