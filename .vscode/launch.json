@@ -5,10 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Python: Current File MAC",
             "type": "python",
             "request": "launch",
             "program": "/Users/hugo/BSI/dev/python/Ona Gets/main.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Current File Windows",
+            "type": "python",
+            "request": "launch",
+            "program": "C:\\Users\\Admin\\source\\vscode\\OnaGets\\main.py",
             "console": "integratedTerminal"
         }
     ]
