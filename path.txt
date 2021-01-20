@@ -1,2 +1,4 @@
 /Users/hugo/BSI/dev/python/Ona Gets/config_rvb
 /Users/hugo/BSI/dev/python/Ona Gets/images/ctf2.png
+C:\Users\Admin\source\vscode\OnaGets\images\ctf3.png
+C:\Users\Admin\source\vscode\OnaGets\images\ctf2.png

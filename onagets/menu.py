@@ -2,7 +2,7 @@ from onagets import bruteforce as bF
 from onagets import utils
 import re
 
-banner = r"""
+banner = """
  ____ ____ ____ _________ ____ ____ ____ ____ 
 ||O |||n |||a |||       |||G |||e |||t |||s ||
 ||__|||__|||__|||_______|||__|||__|||__|||__||
@@ -20,50 +20,71 @@ config = {
 
 def selectChannel(config):
     possibleOptions = {
-        "1": ['r,g,b', 'r,b,g', 'g,r,b', 'g,b,r', 'b,r,g', 'b,g,r'],
-        "2": ['b,g', 'b,r', 'g,r', 'g,b', 'r,g', 'r,b'],
-        "3": ['r', 'g', 'b']
+        "2": ['rgb', 'rbg', 'grb', 'gbr', 'brg', 'bgr'],
+        "3": ['bg', 'br', 'gr', 'gb', 'rg', 'rb'],
+        "4": ['r', 'g', 'b']
     }
 
     selectedChannels = []
-    channelsMsg = r"""
-Options prédéfinies : chaques options va tenter chaques canaux
-(ex: 1,2 va bruteforce RGB - RGB - GRB - GBR - BGR - BRG - BG - BR... etc )
-(ex: 2,3 va bruteforce BG - BR - GR - GB - RG - RB - R - B - G)
+    channelsMsg = """
+Options prédéfinies : chaques options va tenter chaques canaux, vous pouvez combiner chaques options
+sauf avec l'option 1 qui elle, va ajouter tout les canaux et ignorer vos autres choix.
+( ex: 2,3 va bruteforce RGB - RGB - GRB - GBR - BGR - BRG - BG - BR... etc )
+( ex: 3,4 va bruteforce BG - BR - GR - GB - RG - RB - R - B - G)
+( ex: 4,5 va bruteforce R - G - B en plus de votre selection manuelle (par ex: rgb;rbg;brg) )
 
-    [1] 3 canaux : RGB - RBG - GRB - GBR - BGR - BRG
-    [2] 2 canaux : BG - BR - GR - GB - RG - RB
-    [3] 1 canal : R - B - G
-
-Sinon choissisez l'option 4 pour saisir manuellement les canaux :
-(ex: canaux séparés par des virgules et chaques combinaisons séparées par des points-virgules)
-    [4] Selection manuelle. Format: r,g,b;r;b,g,r
+    [1] Tous les cannaux ( 15 au total )
+    [2] 3 canaux : RGB - RBG - GRB - GBR - BGR - BRG
+    [3] 2 canaux : BG - BR - GR - GB - RG - RB
+    [4] 1 canal : R - B - G
+    [5] Selection manuelle. Format: rgb;r;bgr
 
 Votre choix : """
 
     channelChoice = input(channelsMsg)
-    vpChoice = set('1234')
+    vpChoice = set('12345')
 
     if "," in channelChoice:
         if any((c in vpChoice) for c in channelChoice):
-            for opt in channelChoice.split(","):
-                if opt == "4":
-                    manualSelection = input(
-                        "\n[!] Rentrez les combinaisons séparées par des points-virgules (ex: r,g,b;r;b,g,r) : ")
-                    if ";" in manualSelection:
-                        for comb in manualSelection.split(";"):
-                            selectedChannels.append(comb)
+            if "1" in channelChoice:
+                print("[i] Option 1 selectionnée, les autres choix seront ignorés...")
+                for id, op in possibleOptions.items():
+                    for cn in op:
+                        selectedChannels.append(cn)
+            else:
+                for opt in channelChoice.split(","):
+                    if opt == "5":
+                        manualSelection = input(
+                            "\n[!] Rentrez les combinaisons séparées par des points-virgules (ex: rgb;r;bgr) : ")
+                        if ";" in manualSelection:
+                            for comb in manualSelection.split(";"):
+                                selectedChannels.append(comb)
+                        else:
+                            selectedChannels.append(manualSelection)
                     else:
-                        selectedChannels.append(manualSelection)
-                else:
-                    print(
-                        f"[+] {possibleOptions[opt]} ajouté aux canaux à bruteforce")
-                    for choice in possibleOptions[opt]:
-                        selectedChannels.append(choice)
+                        print(
+                            f"[+] {possibleOptions[opt]} ajouté aux canaux à bruteforce")
+                        for choice in possibleOptions[opt]:
+                            selectedChannels.append(choice)
     else:
-        if any((c in vpChoice) for c in channelChoice):
-            for choice in possibleOptions[channelChoice]:
-                selectedChannels.append(choice)
+        if channelChoice == "5":
+            manualSelection = input(
+                "\n[!] Rentrez les combinaisons séparées par des points-virgules (ex: rgb;r;bgr) : ")
+            if ";" in manualSelection:
+                for comb in manualSelection.split(";"):
+                    selectedChannels.append(comb)
+            else:
+                selectedChannels.append(manualSelection)
+        else:
+            if "1" in channelChoice:
+                print("[i] Option 1 selectionnée, les autres choix seront ignorés...")
+                for id, op in possibleOptions.items():
+                    for cn in op:
+                        selectedChannels.append(cn)
+            else:
+                if any((c in vpChoice) for c in channelChoice):
+                    for choice in possibleOptions[channelChoice]:
+                        selectedChannels.append(choice)
 
     print("\n[i] Récapitulatif des canaux selectionnés :")
     for allSelected in selectedChannels:

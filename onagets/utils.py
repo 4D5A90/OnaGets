@@ -29,6 +29,8 @@ def saveStringsAsFile(data, name, channel):
     f = open(f"./{ogFileName}_{channel.replace(',', '')}.txt", "a")
     f.write(data)
     f.close()
+    print(
+        f"[i] Fichier {ogFileName}_{channel.replace(',', '')}.txt sauvegardé dans le même dossier que le script")
 
 
 def getAnswer(answer):
@@ -59,11 +61,10 @@ def isStringInt(s):
 
 
 def clear():
+    sleep(2)
     # windows
     if os.name == 'nt':
         _ = os.system('cls')
     # mac ou linux
     else:
         _ = os.system('clear')
-
-    sleep(2)
