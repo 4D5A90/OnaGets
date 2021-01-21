@@ -20,7 +20,7 @@ def loadImage(nom_image):
     for y in range(0, pic.height):
         for x in range(0, pic.width):
             pixels.append(pic.getpixel((x, y)))
-    return pixels, nom_image, pic.width, pic.height
+    return {"data": pixels, "path": nom_image, "width": pic.width, "height": pic.height}
 
 
 def saveStringsAsFile(data, name, channel):
@@ -43,11 +43,11 @@ def getAnswer(answer):
         return None
 
 
-def getIntAnswer(answer):
+def getIntAnswer(answer, default):
     if isStringInt(answer):
         return int(answer)
     else:
-        return 5
+        return default
 
 
 def isStringInt(s):

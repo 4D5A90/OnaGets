@@ -4,11 +4,6 @@ from timeit import default_timer as timer
 
 colorDict = {"r": 0, "g": 1, "v": 1, "b": 2}
 
-# def __getLSB(pix):  # si la valeur du canal est paire alors le lsb est 0 sinon c'est 1
-#     return pix % 2
-# def __getColor(channel):  # en fonction du channel on recupère la position de cette couleur dans le pixel (R, G, B) => (0, 1, 2)
-#     return colorDict[channel]
-
 
 def __binToString(binary, min_len=5):
     allStrings = []  # contient tout les string (suite de +5 caractères ASCII)
@@ -36,12 +31,15 @@ def __getPixelsValue(pixels, channel):
     return res
 
 
-def __decodeASCII(inputImage, channels):
-    image, imageName, width, height = inputImage
-
+def __decodeASCII(config):
+    image = config['bruteforceFile']['data'][config['imageOffset']
+        :config['chunkSize']]
+    imageName = config['bruteforceFile']['path']
+    channels = config['channels']
     lsbValues = {}
 
-    for channel in channels:  # initialisation du dictionnaire pour chaques canaux
+    # initialisation du dictionnaire pour chaques canaux
+    for channel in channels:
         lsbValues[channel] = ""
 
     start = timer()
@@ -53,16 +51,18 @@ def __decodeASCII(inputImage, channels):
             str(__getPixelsValue(image, channel))
 
     print(
-        f"[i] [{round(timer() - start, 2)}s] Bruteforce terminé ! Extraction de tout les strings...")
+        f"[i] Bruteforce terminé en {round(timer() - start, 2)}s ! Extraction de tout les strings...")
     for dcodChannel, value in lsbValues.items():
         strings = __binToString([value[i:i+8]
-                                 for i in range(0, len(value), 8)])
+                                 for i in range(0, len(value), 8)], config['minStringLen'])
         utils.saveStringsAsFile(strings, imageName, dcodChannel)
 
     end = timer()
-    print(f"[i] Bruteforce terminé ! Cela à pris {end - start} secondes")
+    print(f"[i] Extraction terminé ! Total : {end - start} secondes")
+
+    # showString = utils.getAnswer(
+    #     input("Voulez vous afficher tout les strings trouvé en fonctions des canaux ?"))
 
 
 def start(config):
-    inputImage = utils.loadImage(config['bruteforceFile'])
-    __decodeASCII(inputImage, config['channels'])
+    __decodeASCII(config)

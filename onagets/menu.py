@@ -3,7 +3,7 @@ from onagets import utils
 import re
 
 banner = """
- ____ ____ ____ _________ ____ ____ ____ ____ 
+ ____ ____ ____ _________ ____ ____ ____ ____
 ||O |||n |||a |||       |||G |||e |||t |||s ||
 ||__|||__|||__|||_______|||__|||__|||__|||__||
 |/__\|/__\|/__\|/_______\|/__\|/__\|/__\|/__\|
@@ -11,10 +11,11 @@ banner = """
 
 config = {
     "channels": [],
-    "bruteforceFile": "",
+    "bruteforceFile": [],
     "minStringLen": 5,
     "moveOrder": "",
-    "imageOffset": ""
+    "imageOffset": 0,
+    "chunkSize": 0
 }
 
 
@@ -44,7 +45,7 @@ Votre choix : """
     channelChoice = input(channelsMsg)
     vpChoice = set('12345')
 
-    if "," in channelChoice:
+    if "," in channelChoice and any((c in vpChoice) for c in channelChoice):
         if any((c in vpChoice) for c in channelChoice):
             if "1" in channelChoice:
                 print("[i] Option 1 selectionnée, les autres choix seront ignorés...")
@@ -67,6 +68,11 @@ Votre choix : """
                         for choice in possibleOptions[opt]:
                             selectedChannels.append(choice)
     else:
+        if len(channelChoice) < 1:
+            print("[i] Aucune option selectionnée, tous les canaux seront choisis")
+            for id, op in possibleOptions.items():
+                for cn in op:
+                    selectedChannels.append(cn)
         if channelChoice == "5":
             manualSelection = input(
                 "\n[!] Rentrez les combinaisons séparées par des points-virgules (ex: rgb;r;bgr) : ")
@@ -90,20 +96,29 @@ Votre choix : """
     for allSelected in selectedChannels:
         print(allSelected)
 
-    input("\nAppuyez sur ENTRER pour continuer...")
+    input("\nAppuyez sur n'importe quelle touche pour passer à l'étape suivante...")
     utils.clear()
 
     config['channels'] = selectedChannels
+
+
+def selectOffset(config):
+    config['imageOffset'] = utils.getIntAnswer(input(
+        "[?] A partir de quel offset souhaitez vous travailler ? "), 0)
+    config['chunkSize'] = utils.getIntAnswer(input(
+        "[?] Sur une taille de ? "), config['bruteforceFile']['width'] * config['bruteforceFile']['height'])
 
 
 def bruteforce():
     global inMenu
     inMenu = None
     askChannels = None
+    imageLoaded = False
+    chooseOffset = None
     while(askChannels == None):
         askChannels = utils.getAnswer(input(
-            "{?] Voulez vous sélectionner manuellement les canaux à bruteforce ? [oy/OY/nN] : "))
-        if askChannels == True:
+            "[?] Voulez vous sélectionner manuellement les canaux à bruteforce ? [oy/OY/nN] : "))
+        if askChannels:
             selectChannel(config)
         elif askChannels == False:
             loadChannel = utils.getAnswer(input(
@@ -117,13 +132,30 @@ def bruteforce():
         else:
             print("[!] Choix incorrect, merci de recommencer")
 
-    config['bruteforceFile'] = input(
-        "[?] Répertoire de l'image à BruteForce : ")
+    while not imageLoaded:
+        try:
+            config['bruteforceFile'] = utils.loadImage(input(
+                "[?] Répertoire de l'image à BruteForce : "))
+            imageLoaded = True
+            print("[i] Image chargée avec succès !")
+            print(
+                f"   - Taille: {config['bruteforceFile']['width']} x {config['bruteforceFile']['height']}\r\n   - Pixels : {config['bruteforceFile']['width'] * config['bruteforceFile']['height']}")
+        except Exception:
+            print("[!] Erreur lors du chargement de l'image ! Veuillez recommencer...")
+
+    while chooseOffset == None:
+        chooseOffset = utils.getAnswer(
+            input("[?] Voulez vous travailler sur un echantillon de l'image ? [oy/OY/nN] : "))
+        if chooseOffset:
+            selectOffset(config)
+        else:
+            config['chunkSize'] = config['bruteforceFile']['width'] * \
+                config['bruteforceFile']['height']
 
     config['minStringLen'] = utils.getIntAnswer(input(
-        "[?] Taille minimale des string à extraire ? (défaut: 5) : "))
-    #bruteFile = '/Users/hugo/BSI/dev/python/Ona Gets/images/ctf1.png'
-    #config['bruteforceFile'] = "C:\\Users\\Admin\\source\\vscode\\OnaGets\\images\\ctf1.png"
+        "[?] Taille minimale des string à extraire ? (défaut: 5) : "), 5)
+    # bruteFile = '/Users/hugo/BSI/dev/python/Ona Gets/images/ctf1.png'
+    # config['bruteforceFile'] = "C:\\Users\\Admin\\source\\vscode\\OnaGets\\images\\ctf1.png"
     bF.start(config)
 
 
@@ -140,6 +172,8 @@ menu = {
     "1": ("Bruteforce", bruteforce),
     "2": ('Configuration', config),
     "3": ("Quitter", quitter)
+
+
 }
 
 print(banner)
@@ -150,6 +184,6 @@ print("========================\n")
 
 inMenu = True
 while inMenu:
-    #ans = input("Choisissez une option : ")
+    # ans = input("Choisissez une option : ")
     ans = "1"
     menu.get(ans, [None, invalid])[1]()
