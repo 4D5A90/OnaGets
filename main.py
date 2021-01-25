@@ -1,2 +1,2 @@
-from onagets import menu
+import onagets
 

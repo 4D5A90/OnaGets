@@ -162,6 +162,7 @@ def bruteforce():
 def quitter():
     global inMenu
     inMenu = None
+    quit()
 
 
 def invalid():
@@ -170,8 +171,8 @@ def invalid():
 
 menu = {
     "1": ("Bruteforce", bruteforce),
-    "2": ('Configuration', config),
-    "3": ("Quitter", quitter)
+    #"2": ('Configuration', config),
+    "2": ("Quitter", quitter)
 
 
 }
@@ -184,6 +185,5 @@ print("========================\n")
 
 inMenu = True
 while inMenu:
-    # ans = input("Choisissez une option : ")
-    ans = "1"
+    ans = input("Choisissez une option : ")
     menu.get(ans, [None, invalid])[1]()
