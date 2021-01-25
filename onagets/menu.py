@@ -46,6 +46,7 @@ Votre choix : """
     channelChoice = input(channelsMsg)
     vpChoice = set('12345')
 
+    # beaucoup de if pour verifier les entrées utilisateur et s'assurer qu'il ne fait pas n'importe quoi
     if "," in channelChoice and any((c in vpChoice) for c in channelChoice):
         if any((c in vpChoice) for c in channelChoice):
             if "1" in channelChoice:

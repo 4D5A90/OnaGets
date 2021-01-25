@@ -27,12 +27,14 @@ def __getPixelsValue(pixels, channel):
     res = ""
     for pixel in pixels:
         for color in channel:
+            # le modulo 2 permet de savoir si le dernier bit est à 0 ou 1 (valeur decimale paire/impaire)
+            # dans chaque pixel on va faire correspondre un chiffre (index r g ou b) pour chaque couleur dans le channel passé en parametre
             res += str(pixel[colorDict[color]] % 2)
     return res
 
 
 def __decodeASCII(config):
-    image = config['bruteforceFile']['data'][config['imageOffset']                                             :config['chunkSize']]
+    image = config['bruteforceFile']['data'][config['imageOffset']:config['chunkSize']]
     imageName = config['bruteforceFile']['path']
     channels = config['channels']
     lsbValues = {}
@@ -53,7 +55,8 @@ def __decodeASCII(config):
         f"[i] Bruteforce terminé en {round(timer() - start, 2)}s ! Extraction de tout les strings...")
     for dcodChannel, value in lsbValues.items():
         strings = __binToString([value[i:i+8]
-                                 for i in range(0, len(value), 8)], config['minStringLen'])
+                                 for i in range(0, len(value), 8)], config['minStringLen'])  # un joli oneline pour split les bits extraits par paquet de 8
+
         if len(config['saveDirectory']) <= 0:
             utils.saveStringsAsFile(strings, imageName, dcodChannel)
         else:

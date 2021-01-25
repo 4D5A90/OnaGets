@@ -4,6 +4,7 @@ from time import sleep
 import sys
 
 
+# fonction utile dans le cas ou un fichier de config est utilisé (voir exemple : config_rvb)
 def selectChannel(config):
     allChannels = []
     with open(config) as fp:
