@@ -32,8 +32,7 @@ def __getPixelsValue(pixels, channel):
 
 
 def __decodeASCII(config):
-    image = config['bruteforceFile']['data'][config['imageOffset']
-        :config['chunkSize']]
+    image = config['bruteforceFile']['data'][config['imageOffset']                                             :config['chunkSize']]
     imageName = config['bruteforceFile']['path']
     channels = config['channels']
     lsbValues = {}
@@ -55,7 +54,11 @@ def __decodeASCII(config):
     for dcodChannel, value in lsbValues.items():
         strings = __binToString([value[i:i+8]
                                  for i in range(0, len(value), 8)], config['minStringLen'])
-        utils.saveStringsAsFile(strings, imageName, dcodChannel)
+        if len(config['saveDirectory']) <= 0:
+            utils.saveStringsAsFile(strings, imageName, dcodChannel)
+        else:
+            utils.saveStringAsFileInDirectory(
+                strings, imageName, config['saveDirectory'], dcodChannel)
 
     end = timer()
     print(f"[i] Extraction terminé ! Total : {end - start} secondes")
