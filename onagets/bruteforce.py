@@ -32,9 +32,7 @@ def __getPixelsValue(pixels, channel, pas):
 
 
 def __decodeASCII(config):
-    #chargement de la plage (totale) de l'image a bruteforce, par defaut imageOffset est à 0 et chunkSize est len(bruteforceFile)
-    image = config['bruteforceFile']['data'][config['imageOffset']
-        :config['chunkSize']]
+    image = config['bruteforceFile']['data'][config['imageOffset']:config['chunkSize']]
     imageName = config['bruteforceFile']['path']
     channels = config['channels']
     lsbValues = {}
@@ -55,8 +53,13 @@ def __decodeASCII(config):
         f"[i] Bruteforce terminé en {round(timer() - start, 2)}s ! Extraction de tout les strings...")
     for dcodChannel, value in lsbValues.items():
         strings = __binToString([value[i:i+8]
-                                 for i in range(0, len(value), 8)], config['minStringLen'])
-        utils.saveStringsAsFile(strings, imageName, dcodChannel)
+                                 for i in range(0, len(value), 8)], config['minStringLen'])  # un joli oneline pour split les bits extraits par paquet de 8
+
+        if len(config['saveDirectory']) <= 0:
+            utils.saveStringsAsFile(strings, imageName, dcodChannel)
+        else:
+            utils.saveStringAsFileInDirectory(
+                strings, imageName, config['saveDirectory'], dcodChannel)
 
     end = timer()
     print(f"[i] Extraction terminé ! Total : {end - start} secondes")

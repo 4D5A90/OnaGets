@@ -16,7 +16,8 @@ config = {
     "moveOrder": "",
     "imageOffset": 0,
     "chunkSize": 0,
-    "pixelStep": 1
+    "pixelStep": 1,
+    "saveDirectory": ""
 }
 
 
@@ -46,6 +47,7 @@ Votre choix : """
     channelChoice = input(channelsMsg)
     vpChoice = set('12345')
 
+    # beaucoup de if pour verifier les entrées utilisateur et s'assurer qu'il ne fait pas n'importe quoi
     if "," in channelChoice and any((c in vpChoice) for c in channelChoice):
         if any((c in vpChoice) for c in channelChoice):
             if "1" in channelChoice:
@@ -69,29 +71,39 @@ Votre choix : """
                         for choice in possibleOptions[opt]:
                             selectedChannels.append(choice)
     else:
-        if len(channelChoice) < 1:
-            print("[i] Aucune option selectionnée, tous les canaux seront choisis")
-            for id, op in possibleOptions.items():
-                for cn in op:
-                    selectedChannels.append(cn)
-        if channelChoice == "5":
-            manualSelection = input(
-                "\n[!] Rentrez les combinaisons séparées par des points-virgules (ex: rgb;r;bgr) : ")
-            if ";" in manualSelection:
-                for comb in manualSelection.split(";"):
-                    selectedChannels.append(comb)
-            else:
-                selectedChannels.append(manualSelection)
-        else:
-            if "1" in channelChoice:
-                print("[i] Option 1 selectionnée, les autres choix seront ignorés...")
+        if any((c in vpChoice) for c in channelChoice):
+            if len(channelChoice) < 1:
+                print(
+                    "[i] Aucune option selectionnée, tous les canaux seront choisis")
                 for id, op in possibleOptions.items():
                     for cn in op:
                         selectedChannels.append(cn)
+            if channelChoice == "5":
+                manualSelection = input(
+                    "\n[!] Rentrez les combinaisons séparées par des points-virgules (ex: rgb;r;bgr) : ")
+                if ";" in manualSelection:
+                    for comb in manualSelection.split(";"):
+                        selectedChannels.append(comb)
+                else:
+                    selectedChannels.append(manualSelection)
             else:
-                if any((c in vpChoice) for c in channelChoice):
-                    for choice in possibleOptions[channelChoice]:
-                        selectedChannels.append(choice)
+                if "1" in channelChoice:
+                    print(
+                        "[i] Option 1 selectionnée, les autres choix seront ignorés...")
+                    for id, op in possibleOptions.items():
+                        for cn in op:
+                            selectedChannels.append(cn)
+                else:
+                    if any((c in vpChoice) for c in channelChoice):
+                        for choice in possibleOptions[channelChoice]:
+                            selectedChannels.append(choice)
+        else:
+            print(
+                "[i] Vous avez rentré un paramètre inconnu ou vous n'avez pas respecté le format.")
+            print("[i] Par conséquent tous les canaux ont été chargé, veuillez relancer le script si cela ne vous convient pas")
+            for id, op in possibleOptions.items():
+                for cn in op:
+                    selectedChannels.append(cn)
 
     print("\n[i] Récapitulatif des canaux selectionnés :")
     for allSelected in selectedChannels:
@@ -116,6 +128,8 @@ def bruteforce():
     askChannels = None
     imageLoaded = False
     chooseOffset = None
+    isSavePath = None
+
     while(askChannels == None):
         askChannels = utils.getAnswer(input(
             "[?] Voulez vous sélectionner manuellement les canaux à bruteforce ? [oy/OY/nN] : "))
@@ -136,7 +150,7 @@ def bruteforce():
     while not imageLoaded:
         try:
             config['bruteforceFile'] = utils.loadImage(input(
-                "[?] Répertoire de l'image à BruteForce : "))
+                "[?] Chemin d'accès de l'image à BruteForce : "))
             imageLoaded = True
             print("[i] Image chargée avec succès !")
             print(
@@ -153,13 +167,26 @@ def bruteforce():
             config['chunkSize'] = config['bruteforceFile']['width'] * \
                 config['bruteforceFile']['height']
 
+    while isSavePath == None:
+        isSavePath = utils.getAnswer(input(
+            "[?] Voulez vous sauvegarder les résultats dans un dossier en particuler (recommandé) (ex: C\\Users\\ResultLSB ou /home/resultLSB) ? [oy/OY/nN] : "))
+        if isSavePath == True:
+            savePath = input("[i] Indiquer le dossier : ")
+            if utils.isPathWriteable(utils.joinPath(savePath, "test.txt")):
+                print(
+                    "[i] Le dossier est accessible ! Les résultats seront écrit dedans")
+                config['saveDirectory'] = savePath
+                utils.safeRemoveFile(utils.joinPath(savePath, "test.txt"))
+            else:
+                print("[!] Le dossier n'est pas accessible...")
+                isSavePath = None
+
     config['minStringLen'] = utils.getIntAnswer(input(
         "[?] Taille minimale des string à extraire ? (défaut: 5) : "), 5)
     
     config['pixelStep'] = utils.getIntAnswer(input(
         "[?] Indiquez le PAS ? (défaut: 1) : "), 1)
-    # bruteFile = '/Users/hugo/BSI/dev/python/Ona Gets/images/ctf1.png'
-    # config['bruteforceFile'] = "C:\\Users\\Admin\\source\\vscode\\OnaGets\\images\\ctf1.png"
+
     bF.start(config)
 
 
@@ -175,7 +202,7 @@ def invalid():
 
 menu = {
     "1": ("Bruteforce", bruteforce),
-    #"2": ('Configuration', config),
+    # "2": ('Configuration', config),
     "2": ("Quitter", quitter)
 
 
