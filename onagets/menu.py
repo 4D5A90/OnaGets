@@ -15,7 +15,8 @@ config = {
     "minStringLen": 5,
     "moveOrder": "",
     "imageOffset": 0,
-    "chunkSize": 0
+    "chunkSize": 0,
+    "pixelStep": 1
 }
 
 
@@ -154,6 +155,9 @@ def bruteforce():
 
     config['minStringLen'] = utils.getIntAnswer(input(
         "[?] Taille minimale des string à extraire ? (défaut: 5) : "), 5)
+    
+    config['pixelStep'] = utils.getIntAnswer(input(
+        "[?] Indiquez le PAS ? (défaut: 1) : "), 1)
     # bruteFile = '/Users/hugo/BSI/dev/python/Ona Gets/images/ctf1.png'
     # config['bruteforceFile'] = "C:\\Users\\Admin\\source\\vscode\\OnaGets\\images\\ctf1.png"
     bF.start(config)

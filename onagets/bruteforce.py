@@ -23,15 +23,16 @@ def __binToString(binary, min_len=5):
     return '\n'.join(allStrings)
 
 
-def __getPixelsValue(pixels, channel):
+def __getPixelsValue(pixels, channel, pas):
     res = ""
-    for pixel in pixels:
+    for pixel in range(0, len(pixels), pas):
         for color in channel:
-            res += str(pixel[colorDict[color]] % 2)
+            res += str(pixels[pixel][colorDict[color]] % 2)
     return res
 
 
 def __decodeASCII(config):
+    #chargement de la plage (totale) de l'image a bruteforce, par defaut imageOffset est à 0 et chunkSize est len(bruteforceFile)
     image = config['bruteforceFile']['data'][config['imageOffset']
         :config['chunkSize']]
     imageName = config['bruteforceFile']['path']
@@ -48,7 +49,7 @@ def __decodeASCII(config):
         print(
             f"[i] [{round(timer() - start, 2)}s] Bruteforce en cours sur le channel {channel}")
         lsbValues[channel] = str(lsbValues[channel]) + \
-            str(__getPixelsValue(image, channel))
+            str(__getPixelsValue(image, channel, config['pixelStep']))
 
     print(
         f"[i] Bruteforce terminé en {round(timer() - start, 2)}s ! Extraction de tout les strings...")
