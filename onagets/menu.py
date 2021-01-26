@@ -34,6 +34,7 @@ sauf avec l'option 1 qui elle, va ajouter tout les canaux et ignorer vos autres 
 ( ex: 2,3 va bruteforce RGB - RGB - GRB - GBR - BGR - BRG - BG - BR... etc )
 ( ex: 3,4 va bruteforce BG - BR - GR - GB - RG - RB - R - B - G)
 ( ex: 4,5 va bruteforce R - G - B en plus de votre selection manuelle (par ex: rgb;rbg;brg) )
+Appuyez sur ENTER pour selectionner tout les canaux (alternative à la premiere option)
 
     [1] Tous les cannaux ( 15 au total )
     [2] 3 canaux : RGB - RBG - GRB - GBR - BGR - BRG
