@@ -13,7 +13,6 @@ config = {
     "channels": [],
     "bruteforceFile": [],
     "minStringLen": 5,
-    "moveOrder": "",
     "imageOffset": 0,
     "chunkSize": 0,
     "pixelStep": 1,
@@ -202,7 +201,6 @@ def invalid():
 
 menu = {
     "1": ("Bruteforce", bruteforce),
-    # "2": ('Configuration', config),
     "2": ("Quitter", quitter)
 
 
